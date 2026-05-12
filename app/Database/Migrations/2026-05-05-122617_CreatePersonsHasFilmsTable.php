@@ -15,9 +15,9 @@ class CreatePersonsHasFilmsTable extends Migration
         ]);
         // Dle diagramu je primární klíč složen z osoby a filmu
         $this->forge->addKey(['persons_id', 'films_id'], true);
-        $this->forge->addForeignKey('persons_id', 'persons', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('films_id', 'films', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('roles_id', 'roles', 'id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('persons_id', 'persons', 'id', 'RESTRICT', 'RESTRICT');
+        $this->forge->addForeignKey('films_id', 'films', 'id', 'RESTRICT', 'RESTRICT');
+        $this->forge->addForeignKey('roles_id', 'roles', 'id', 'RESTRICT', 'RESTRICT');
         $this->forge->createTable('persons_has_films');
     }
 

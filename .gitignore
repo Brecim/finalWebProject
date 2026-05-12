@@ -84,6 +84,7 @@ php_errors.log
 # Composer
 #-------------------------
 node_modules/
+vendor/
 
 #-------------------------
 # IDE / Development Files

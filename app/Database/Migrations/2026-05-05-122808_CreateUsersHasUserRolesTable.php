@@ -14,8 +14,8 @@ class CreateUsersHasUserRolesTable extends Migration
         ]);
         // Složený primární klíč z obou cizích klíčů
         $this->forge->addKey(['users_id', 'user_roles_id'], true);
-        $this->forge->addForeignKey('users_id', 'users', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('user_roles_id', 'user_roles', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('users_id', 'users', 'id', 'RESTRICT', 'RESTRICT');
+        $this->forge->addForeignKey('user_roles_id', 'user_roles', 'id', 'RESTRICT', 'RESTRICT');
         $this->forge->createTable('users_has_user_roles');
     }
 

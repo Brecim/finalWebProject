@@ -18,7 +18,7 @@ class CreatePersonsTable extends Migration
             'countries_id' =>['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('countries_id', 'countries', 'id', 'CASCADE', 'RESTRICT');
+        $this->forge->addForeignKey('countries_id', 'countries', 'id', 'RESTRICT', 'RESTRICT');
         $this->forge->createTable('persons');
     }
 
