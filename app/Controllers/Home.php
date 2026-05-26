@@ -15,7 +15,7 @@ class Home extends BaseController
 
         // var_dump($data);
         
-        return view("Home", $data);
+        return view("home", $data);
     }
 
     public function showFilm($id) {
@@ -27,6 +27,6 @@ class Home extends BaseController
 
         // var_dump($data);
         
-        return view("Film", $data);
+        return view("film", $data);
     }
 }
