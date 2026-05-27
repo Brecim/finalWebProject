@@ -58,7 +58,7 @@
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteFilmModal<?= esc($film->id) ?>">Delete</button>
                                 </div>
 
-                                <div class="modal fade" id="deleteFilmModal<?= esc($film->id) ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal fade" id="deleteFilmModal<?= esc($film->id) ?>" data-bs-backdrop="false" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content border-0 rounded-4">
                                             <div class="modal-header">

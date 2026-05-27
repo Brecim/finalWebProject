@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-semibold">Description</label>
-                    <textarea name="description" rows="10" class="form-control" required><?= esc(old('description') ?? $film->description) ?></textarea>
+                    <textarea id="film-description" name="description" rows="10" class="form-control"><?= esc(old('description', $film->description ?? '')) ?></textarea>
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-semibold">Poster image</label>
@@ -59,5 +59,28 @@
         </form>
     </div>
 </div>
+
+<!-- 1. Load TinyMCE from CDN -->
+<script src=" https://cdn.jsdelivr.net/npm/tinymce@8.5.1/tinymce.min.js "></script>
+
+<!-- 2. Initialize the editor -->
+<script>
+    tinymce.init({
+        selector: '#film-description',
+        license_key: 'gpl',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        height: 400,
+        // Optional: match your site's theme
+        skin: 'oxide',
+        content_css: 'default',
+        // Ensure data is synced before form submission
+        setup: function (editor) {
+            editor.on('change', function () {
+                tinymce.triggerSave();
+            });
+        }
+    });
+</script>
 
 <?= $this->endSection(); ?>
