@@ -5,7 +5,7 @@
             <span>MovieDB</span>
         </a>
         <div class="ms-auto d-flex align-items-center gap-2">
-            <a href="<?= site_url('admin/films') ?>" class="btn btn-app-accent rounded-pill px-4 fw-semibold">Admin panel</a>
+            <a href="<?= site_url('login') ?>" class="btn btn-app-accent rounded-pill px-4 fw-semibold">Admin panel</a>
         </div>
     </div>
 </nav>

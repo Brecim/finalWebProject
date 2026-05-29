@@ -11,6 +11,7 @@
     },
     "require": {
         "php": "^8.2",
+        "benedmunds/codeigniter-ion-auth": "4.x-dev",
         "codeigniter4/framework": "^4.7"
     },
     "require-dev": {
@@ -39,5 +40,11 @@
     },
     "scripts": {
         "test": "phpunit"
-    }
+    },
+    "minimum-stability": "dev",
+    "repositories": [{
+        "name": "ionAuth",
+        "type": "vcs",
+        "url": "git@github.com:benedmunds/CodeIgniter-Ion-Auth.git"
+    }]
 }
