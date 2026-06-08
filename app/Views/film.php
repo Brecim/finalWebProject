@@ -18,9 +18,35 @@
                     </div>
                     <h1 class="display-5 fw-bold section-title mb-3"><?= esc($film->title) ?></h1>
                     
-                    <div class="card border-0 rounded-4 bg-light-subtle p-4">
+                    <div class="card border-0 rounded-4 bg-light-subtle p-4 mb-4">
                         <p class="card-text mb-0 fs-5 lh-lg"><?= esc($film->description) ?></p>
                     </div>
+
+                    <?php if (!empty($filmPeople)): ?>
+                    <div class="row g-3">
+                        <?php 
+                            $peopleByRole = [];
+                            foreach ($filmPeople as $person) {
+                                if (!isset($peopleByRole[$person->role_name])) {
+                                    $peopleByRole[$person->role_name] = [];
+                                }
+                                $peopleByRole[$person->role_name][] = $person;
+                            }
+                        ?>
+                        <?php foreach ($peopleByRole as $roleName => $people): ?>
+                        <div class="col-md-6">
+                            <div class="card border-0 rounded-3 bg-light-subtle p-3">
+                                <h6 class="fw-bold text-info mb-2"><?= esc($roleName) ?></h6>
+                                <div class="d-flex flex-column gap-1">
+                                    <?php foreach ($people as $person): ?>
+                                    <small><?= esc($person->first_name . ' ' . $person->last_name) ?></small>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

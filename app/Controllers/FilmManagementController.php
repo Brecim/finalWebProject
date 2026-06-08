@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Film;
+use App\Models\Person;
+use App\Models\Role;
+use App\Models\PersonRole;
 
 class FilmManagementController extends BaseController
 {
@@ -16,6 +19,18 @@ class FilmManagementController extends BaseController
         $posterImage->move(ROOTPATH . 'csfd_pictures', $posterName, true);
 
         return $posterName;
+    }
+
+    private function getFilmPeopleWithRoles($filmId)
+    {
+        $db = \Config\Database::connect();
+        $builder = $db->table('persons_has_films');
+        $builder->select('persons.id, persons.first_name, persons.last_name, roles.id as role_id, roles.name as role_name')
+                ->join('persons', 'persons.id = persons_has_films.persons_id')
+                ->join('roles', 'roles.id = persons_has_films.roles_id')
+                ->where('persons_has_films.films_id', $filmId);
+        
+        return $builder->get()->getResultObject();
     }
 
     public function index()
@@ -77,8 +92,14 @@ class FilmManagementController extends BaseController
             return redirect()->to(site_url('admin/films'))->with('error', 'The film could not be found.');
         }
 
+        $personModel = new Person();
+        $roleModel = new Role();
+
         return view('admin/films/edit', [
             'film' => $film,
+            'people' => $this->getFilmPeopleWithRoles($id),
+            'availablePeople' => $personModel->findAll(),
+            'availableRoles' => $roleModel->findAll(),
         ]);
     }
 
@@ -146,5 +167,44 @@ class FilmManagementController extends BaseController
         $filmModel->delete($id);
 
         return redirect()->to(site_url('admin/films'))->with('success', 'Film has been deleted successfully.');
+    }
+
+    public function addPerson($filmId)
+    {
+        $personId = $this->request->getPost('person_id');
+        $roleId = $this->request->getPost('role_id');
+
+        if (empty($personId) || empty($roleId)) {
+            return redirect()->back()->with('error', 'Please select both person and role.');
+        }
+
+        $personRoleModel = new PersonRole();
+        
+        // Check if this person is already in this film with a different role
+        $existing = $personRoleModel->where('persons_id', $personId)
+                                     ->where('films_id', $filmId)
+                                     ->first();
+
+        if ($existing) {
+            return redirect()->back()->with('error', 'This person is already assigned to this film.');
+        }
+
+        $personRoleModel->insert([
+            'persons_id' => $personId,
+            'films_id' => $filmId,
+            'roles_id' => $roleId,
+        ]);
+
+        return redirect()->back()->with('success', 'Person added to film successfully.');
+    }
+
+    public function removePerson($filmId, $personId)
+    {
+        $personRoleModel = new PersonRole();
+        $personRoleModel->where('persons_id', $personId)
+                        ->where('films_id', $filmId)
+                        ->delete();
+
+        return redirect()->back()->with('success', 'Person removed from film successfully.');
     }
 }

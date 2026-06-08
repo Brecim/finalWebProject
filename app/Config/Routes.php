@@ -6,10 +6,12 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/film/(:num)', 'Home::showFilm/$1');
+$routes->get('film/(:num)', 'Home::showFilm/$1');
 
-$routes->get('/login', 'LoginController::login');
-$routes->post('/auth', 'LoginController::auth');
+$routes->get('login', 'LoginController::login');
+$routes->post('auth', 'LoginController::auth');
+$routes->get('auth/logout', 'LoginController::logout');
+$routes->get('profile', 'LoginController::profile', ['filter' => 'auth']);
 
 $routes->group('admin', ['filter' => 'auth'] , static function ($routes){
     $routes->get('films', 'FilmManagementController::index');
@@ -18,5 +20,7 @@ $routes->group('admin', ['filter' => 'auth'] , static function ($routes){
 	$routes->get('films/(:num)/edit', 'FilmManagementController::edit/$1');
 	$routes->post('films/(:num)/update', 'FilmManagementController::update/$1');
 	$routes->post('films/(:num)/delete', 'FilmManagementController::delete/$1');
+	$routes->post('films/(:num)/add-person', 'FilmManagementController::addPerson/$1');
+	$routes->post('films/(:num)/remove-person/(:num)', 'FilmManagementController::removePerson/$1/$2');
 
 });

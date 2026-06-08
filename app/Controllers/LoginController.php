@@ -41,4 +41,33 @@ class LoginController extends BaseController
             return redirect()->to("/login");
         }
     }
+
+    public function logout()
+    {
+        $this->ionAuth->logout();
+        return redirect()->to('')->with('success', 'You have been logged out successfully.');
+    }
+
+    public function profile()
+    {
+        if (!$this->ionAuth->loggedIn()) {
+            return redirect()->to('/login');
+        }
+
+        $user = $this->ionAuth->user()->row();
+        
+        // Get user groups
+        $db = \Config\Database::connect();
+        $builder = $db->table('users_groups');
+        $builder->select('groups.id, groups.name, groups.description')
+                ->join('groups', 'groups.id = users_groups.group_id')
+                ->where('users_groups.user_id', $user->id);
+        
+        $userGroups = $builder->get()->getResultObject();
+
+        return view('user/profile', [
+            'user' => $user,
+            'groups' => $userGroups,
+        ]);
+    }
 }

@@ -5,7 +5,16 @@
             <span>MovieDB</span>
         </a>
         <div class="ms-auto d-flex align-items-center gap-2">
-            <a href="<?= site_url('login') ?>" class="btn btn-app-accent rounded-pill px-4 fw-semibold">Admin panel</a>
+            <?php $ionAuth = new \IonAuth\Libraries\IonAuth(); ?>
+            <?php if ($ionAuth->loggedIn()): ?>
+                <a href="<?= site_url('profile') ?>" class="btn btn-app-accent rounded-pill px-4 fw-semibold">Profile</a>
+                <?php if ($ionAuth->isAdmin()): ?>
+                    <a href="<?= site_url('admin/films') ?>" class="btn btn-outline-warning rounded-pill px-4 fw-semibold">Admin Panel</a>
+                <?php endif; ?>
+                <a href="<?= site_url('auth/logout') ?>" class="btn btn-outline-danger rounded-pill px-4 fw-semibold">Logout</a>
+            <?php else: ?>
+                <a href="<?= site_url('login') ?>" class="btn btn-app-accent rounded-pill px-4 fw-semibold">Login</a>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
