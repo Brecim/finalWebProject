@@ -1,69 +1,95 @@
-# CodeIgniter 4 Application Starter
+# Final Project WEB
 
-## What is CodeIgniter?
+Repozitář pro finální společný projekt z předmětu Webové aplikace.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Seznam externích knihoven
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- **Bootstrap 5.3.8** -- https://getbootstrap.com/ - licence: MIT
+  - License: https://github.com/twbs/bootstrap/blob/main/LICENSE
+- **Motiv Litera (Bootswatch) 5.3.8** -- https://bootswatch.com/litera/ - licence: MIT
+  - License: https://github.com/thomaspark/bootswatch/blob/master/LICENSE
+- **Font Awesome Free 4.7.0** -- https://fontawesome.com/v4/ - licence: ikony: CC BY 4.0, fonty: SIL OFL 1.1, kód: MIT
+  - Repo / info: https://github.com/FortAwesome/Font-Awesome
+- **TinyMCE 8.5.1 (CDN)** -- https://www.tiny.cloud/ - licence: viz projekt (link níže)
+  - License / repo: https://github.com/tinymce/tinymce/blob/main/LICENSE.md
+  - Použito přes CDN v pohledech (viz `app/Views/admin/films/create.php` a `edit.php`).
+- **jQuery 3.7.1 (CDN)** -- https://jquery.com/ - licence: MIT
+  - License: https://github.com/jquery/jquery/blob/main/LICENSE.txt
+- **CodeIgniter 4 (framework)** -- https://codeigniter.com/ - licence: MIT
+  - Ve `composer.json`: `codeigniter4/framework` (verze ^4.7)
+- **Ion Auth (benedmunds/codeigniter-ion-auth)** -- autentizace uživatelů (v `composer.json`).
+- **Vývojové nástroje / testy**: `phpunit/phpunit`, `fakerphp/faker` (viz `composer.json`).
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## GitHub repozitář
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+https://github.com/Brecim/finalWebProject
 
-## Installation & updates
+## Rozdělení práce
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+### Marek Reich
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+- Založení repozitáře
+- Vytvoření ukazatele postupu
+- Vytvoření tabulky
+- Vytvoření karet a souvisejících popisků
+- Import knihovny TinyMCE
+- Vytvoření textového pole se zabudovaným editorem typu WYSIWYG
+- Vytvoření fontových objektů (ikonek) související s knihovnou Font Awesome
+- Spoluvytváření dokumentace (rozdělení práce, seznam nástrojů, popis metod a knihoven, konfigurací)
 
-## Setup
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### Ondřej Tomáštík
 
-## Important Change with index.php
+- Import knihoven Bootstrap, Motiv Litera pro Bootstrap (Bootswatch), Font Awesome, jQuery
+- Určení designu celých stránek
+- Vytvoření a upravení navigační lišty
+- Vytvoření carouselu a popisků s ním související
+- Vytvoření textu na stránce index.html související s tématem
+- Vytvoření formuláře pro registraci
+- Vytvoření formuláře pro přihlášení
+- Vytvoření multiselectu
+- Zprovoznění hostingu
+- Založení a úprava detailů dokumentace
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+## Popis hlavních souborů a metod (stručně)
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+- `app/Controllers/Home.php`:
+  - `index()` — načte seznam filmů s paginací a předá do view `home`.
+  - `showFilm($id)` — načte detail konkrétního filmu a pomocí `FilmTools` doplní informace o hercích a počtu rolí; zobrazí view `film`.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+- `app/Controllers/FilmManagementController.php`:
+  - `index()` — administrativní seznam všech filmů (view `admin/films/list`).
+  - `createForm()` — zobrazení formuláře pro vytvoření filmu.
+  - `create()` — validace vstupu, uložení posteru přes `FilmTools::storePosterImage()`, vložení do DB.
+  - `edit($id)` — zobrazení formuláře pro editaci filmu, načtení dostupných osob a rolí.
+  - `update($id)` — validace, případná výměna posteru, aktualizace záznamu.
+  - `delete($id)` — odstranění filmu a smazání posteru (pokud existuje).
+  - `addPerson($filmId)` — přidání osoby s rolí k filmu (vkládá do pivot tabulky `persons_has_films`).
+  - `removePerson($filmId, $personId)` — odebrání osoby z filmu.
 
-## Repository Management
+- `app/Controllers/LoginController.php`:
+  - `initController()` — inicializuje `IonAuth` a pomocné helpery.
+  - `login()` — zobrazení login stránky (pokud není přihlášen).
+  - `auth()` — zpracování přihlášení (podpora přihlášení emailem nebo uživatelským jménem).
+  - `register()` / `registerForm()` — registrace uživatele s validací polí.
+  - `logout()` — odhlášení uživatele.
+  - `profile()` — zobrazení profilu přihlášeného uživatele a jeho skupin.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+- `app/Libraries/FilmTools.php` (vlastní knihovna):
+  - `storePosterImage(UploadedFile $posterImage, ?string $oldPosterImage = null): string` — uloží poster do `csfd_pictures`, smaže starý pokud je předán.
+  - `deletePosterImage(?string $posterImage): void` — smaže soubor pokud existuje.
+  - `getFilmPeopleWithRoles(int $filmId): array` — vrátí seznam osob a jejich rolí spojených s daným filmem.
+  - `getFilmCastCount(int $filmId): int` — spočítá počet přiřazených rolí (záznamů) pro film.
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+## Konfigurační proměnné (vybrané)
 
-## Server Requirements
+- `Pager->perPage` — počet položek na stránku pro paginaci (použito v `Home::index()`).
+- Databázové připojení a další konfigurace jsou ve standardních souborech CodeIgniteru (`app/Config/Database.php`, `app/Config/App.php`, atd.).
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+## Zdroje / reference
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+- Kódy a licence knihoven jsou odkazovány v sekci "Seznam externích knihoven".
+- CDN odkazy (použity v pohledech):
+  - TinyMCE (použito verze 8.5.1 v `app/Views/admin/films/create.php` a `edit.php`)
+  - jQuery 3.7.1 (použito v `app/Views/admin/films/edit.php`)
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
