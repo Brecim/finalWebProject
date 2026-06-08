@@ -153,32 +153,42 @@ class FilmManagementController extends BaseController
 
     public function addPerson($filmId)
     {
-        $personId = $this->request->getPost('person_id');
+        $personIds = (array) $this->request->getPost('person_id');
         $roleId = $this->request->getPost('role_id');
 
-        if (empty($personId) || empty($roleId)) {
+        $personIds = array_values(array_filter($personIds));
+
+        if (empty($personIds) || empty($roleId)) {
             return redirect()->back()->with('error', 'Please select both person and role.');
         }
 
         $db = \Config\Database::connect();
+        $addedCount = 0;
 
-        $existing = $db->table('persons_has_films')
-            ->where('persons_id', $personId)
-            ->where('films_id', $filmId)
-            ->get()
-            ->getRow();
+        foreach ($personIds as $personId) {
+            $existing = $db->table('persons_has_films')
+                ->where('persons_id', $personId)
+                ->where('films_id', $filmId)
+                ->get()
+                ->getRow();
 
-        if ($existing) {
-            return redirect()->back()->with('error', 'This person is already assigned to this film.');
+            if ($existing) {
+                continue;
+            }
+
+            $db->table('persons_has_films')->insert([
+                'persons_id' => $personId,
+                'films_id' => $filmId,
+                'roles_id' => $roleId,
+            ]);
+            $addedCount++;
         }
 
-        $db->table('persons_has_films')->insert([
-            'persons_id' => $personId,
-            'films_id' => $filmId,
-            'roles_id' => $roleId,
-        ]);
+        if ($addedCount === 0) {
+            return redirect()->back()->with('error', 'Selected people are already assigned to this film.');
+        }
 
-        return redirect()->back()->with('success', 'Person added to film successfully.');
+        return redirect()->back()->with('success', $addedCount === 1 ? 'Person added to film successfully.' : $addedCount . ' people added to film successfully.');
     }
 
     public function removePerson($filmId, $personId)

@@ -33,11 +33,9 @@ class LoginFilter implements FilterInterface
     {
         $this->ionAuth = new IonAuth();
         $this->session = \Config\Services::session();
-        $this->alert = new Alert();
         if (!$this->ionAuth->loggedIn()) {
-            $alert = $this->alert->makeMessage(false, 'filter');
-            $this->session->setFlashdata('alert', $alert);
-            return redirect()->route('/');
+            $this->session->setFlashdata('message', 'You must be logged in to access the admin area.');
+            return redirect()->to(site_url('login'));
        }
     }
 

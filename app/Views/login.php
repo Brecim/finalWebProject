@@ -2,40 +2,56 @@
 
 <?=$this->section("content");?>
 
-<div class="container mt-5">
+<div class="container mt-5 pb-5">
     <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4>Login</h4>
-                </div>
+        <div class="col-md-5 col-lg-4">
+            <div class="card movie-card p-4 p-md-5">
+                <h1 class="h3 fw-bold section-title mb-2 text-center">Login</h1>
+                <p class="text-center text-muted mb-4">Use your username or email address.</p>
 
-                <div class="card-body">
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
+                <?php endif; ?>
 
-                    <?= form_open("auth") ?>
-                    
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fa fa-user"></i></span>
-                            <div class="form-floating">
-                                <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required>
-                                <label for="username">Username</label>
-                            </div>
+                <?php if (session()->getFlashdata('message')): ?>
+                    <div class="alert alert-danger"><?= session()->getFlashdata('message') ?></div>
+                <?php endif; ?>
+
+                <form action="<?= site_url('auth') ?>" method="post">
+                    <?= csrf_field() ?>
+
+                    <?= bs_form_group('identity', 'Username or email', 'text', old('identity'), 'Enter username or email', 'fa-user') ?>
+                    <?= bs_password_group('password', 'Password', 'Enter password') ?>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="remember" value="1" id="remember">
+                            <label class="form-check-label" for="remember">Remember me</label>
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fa fa-key"></i></span>
-                            <div class="form-floating">
-                                <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
-                                <label for="password">Password</label>
-                            </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Sign In</button>
-                        </div>
-                    </form>
-                </div>
+                        <a href="<?= site_url('register') ?>" class="text-decoration-none">Create account</a>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-app-accent btn-lg fw-semibold">Sign in</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('click', function (event) {
+    const toggle = event.target.closest('.js-password-toggle');
+    if (! toggle) return;
+
+    const field = document.querySelector(toggle.getAttribute('data-target'));
+    if (! field) return;
+
+    const isPassword = field.type === 'password';
+    field.type = isPassword ? 'text' : 'password';
+    toggle.textContent = isPassword ? 'Hide' : 'Show';
+});
+</script>
 
 <?=$this->endSection();?>

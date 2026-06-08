@@ -9,6 +9,8 @@ $routes->get('/', 'Home::index');
 $routes->get('film/(:num)', 'Home::showFilm/$1');
 
 $routes->get('login', 'LoginController::login');
+$routes->get('register', 'LoginController::registerForm');
+$routes->post('register', 'LoginController::register');
 $routes->post('auth', 'LoginController::auth');
 $routes->get('auth/logout', 'LoginController::logout');
 $routes->get('profile', 'LoginController::profile', ['filter' => 'auth']);

@@ -71,8 +71,8 @@
                 <div class="row g-3">
                     <div class="col-md-5">
                         <label class="form-label fw-semibold">Select Person</label>
-                        <select name="person_id" class="form-select form-select-lg" required>
-                            <option value="">-- Choose a person --</option>
+                        <select name="person_id[]" class="form-select form-select-lg js-select2-persons" multiple required>
+                            <option value="" disabled>-- Choose one or more people --</option>
                             <?php foreach ($availablePeople as $person): ?>
                                 <option value="<?= esc($person->id) ?>">
                                     <?= esc($person->first_name . ' ' . $person->last_name) ?>
@@ -153,6 +153,18 @@
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(function () {
+        $('.js-select2-persons').select2({
+            width: '100%',
+            placeholder: '-- Choose one or more people --'
+        });
+    });
+</script>
 
 <!-- 1. Load TinyMCE from CDN -->
 <script src=" https://cdn.jsdelivr.net/npm/tinymce@8.5.1/tinymce.min.js "></script>
