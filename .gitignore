@@ -127,4 +127,4 @@ _modules/*
 
 # Ondrovy výjimky
 
-app/Config/App.php
+app\Config\App.php

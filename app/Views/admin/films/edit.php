@@ -117,10 +117,28 @@
                                     <td><?= esc($person->first_name . ' ' . $person->last_name) ?></td>
                                     <td><span class="badge bg-info"><?= esc($person->role_name) ?></span></td>
                                     <td>
-                                        <form action="<?= site_url('admin/films/' . $film->id . '/remove-person/' . $person->id) ?>" method="post" class="d-inline">
-                                            <?= csrf_field() ?>
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this person from the film?');">Remove</button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#removePersonModal<?= esc($person->id) ?>">Remove</button>
+
+                                        <div class="modal fade" id="removePersonModal<?= esc($person->id) ?>" data-bs-backdrop="false" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 rounded-4">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Remove person from film</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to remove <strong><?= esc($person->first_name . ' ' . $person->last_name) ?></strong> from this film?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                        <form action="<?= site_url('admin/films/' . $film->id . '/remove-person/' . $person->id) ?>" method="post" class="d-inline">
+                                                            <?= csrf_field() ?>
+                                                            <button type="submit" class="btn btn-danger">Remove</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

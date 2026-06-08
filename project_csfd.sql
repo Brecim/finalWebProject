@@ -55,7 +55,10 @@ CREATE TABLE `films` (
   `year` smallint NOT NULL,
   `length` smallint NOT NULL COMMENT 'Runtime in minutes',
   `poster_image` varchar(255) COLLATE utf8mb4_0900_as_cs DEFAULT NULL,
-  `description` text COLLATE utf8mb4_0900_as_cs
+  `description` text COLLATE utf8mb4_0900_as_cs,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
 
 --

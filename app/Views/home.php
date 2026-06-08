@@ -23,6 +23,12 @@
                 </div>
             <?php endforeach; ?>
         </div>
+
+            <?php if (! empty($pager)): ?>
+                <div class="d-flex justify-content-center mt-5">
+                    <?= $pager->links() ?>
+                </div>
+            <?php endif; ?>
     </div>
 
 <?=$this->endSection();?>

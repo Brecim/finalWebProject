@@ -5,34 +5,10 @@ namespace App\Controllers;
 use App\Models\Film;
 use App\Models\Person;
 use App\Models\Role;
-use App\Models\PersonRole;
+use App\Libraries\FilmTools;
 
 class FilmManagementController extends BaseController
 {
-    private function storePosterImage($posterImage, ?string $oldPosterImage = null): string
-    {
-        if ($oldPosterImage && is_file(ROOTPATH . 'csfd_pictures/' . $oldPosterImage)) {
-            @unlink(ROOTPATH . 'csfd_pictures/' . $oldPosterImage);
-        }
-
-        $posterName = $posterImage->getClientName();
-        $posterImage->move(ROOTPATH . 'csfd_pictures', $posterName, true);
-
-        return $posterName;
-    }
-
-    private function getFilmPeopleWithRoles($filmId)
-    {
-        $db = \Config\Database::connect();
-        $builder = $db->table('persons_has_films');
-        $builder->select('persons.id, persons.first_name, persons.last_name, roles.id as role_id, roles.name as role_name')
-                ->join('persons', 'persons.id = persons_has_films.persons_id')
-                ->join('roles', 'roles.id = persons_has_films.roles_id')
-                ->where('persons_has_films.films_id', $filmId);
-        
-        return $builder->get()->getResultObject();
-    }
-
     public function index()
     {
         $filmModel = new Film();
@@ -69,7 +45,8 @@ class FilmManagementController extends BaseController
         }
 
         $posterImage = $this->request->getFile('poster_image');
-        $posterName = $this->storePosterImage($posterImage);
+        $filmTools = new FilmTools();
+        $posterName = $filmTools->storePosterImage($posterImage);
 
         $filmModel = new Film();
         $filmModel->insert([
@@ -94,10 +71,11 @@ class FilmManagementController extends BaseController
 
         $personModel = new Person();
         $roleModel = new Role();
+        $filmTools = new FilmTools();
 
         return view('admin/films/edit', [
             'film' => $film,
-            'people' => $this->getFilmPeopleWithRoles($id),
+            'people' => $filmTools->getFilmPeopleWithRoles((int) $id),
             'availablePeople' => $personModel->findAll(),
             'availableRoles' => $roleModel->findAll(),
         ]);
@@ -124,17 +102,23 @@ class FilmManagementController extends BaseController
         }
 
         if (! $this->validate($rules)) {
+            $filmTools = new FilmTools();
+
             return view('admin/films/edit', [
                 'film' => $film,
                 'validation' => $this->validator,
+                'people' => $filmTools->getFilmPeopleWithRoles((int) $id),
+                'availablePeople' => (new Person())->findAll(),
+                'availableRoles' => (new Role())->findAll(),
             ]);
         }
 
         $posterImage = $this->request->getFile('poster_image');
         $posterName = $film->poster_image;
+        $filmTools = new FilmTools();
 
         if ($posterImage && $posterImage->isValid() && ! $posterImage->hasMoved()) {
-            $posterName = $this->storePosterImage($posterImage, $film->poster_image);
+            $posterName = $filmTools->storePosterImage($posterImage, $film->poster_image);
         }
 
         $filmModel->update($id, [
@@ -158,10 +142,8 @@ class FilmManagementController extends BaseController
         }
 
         if (! empty($film->poster_image)) {
-            $posterPath = ROOTPATH . 'csfd_pictures/' . $film->poster_image;
-            if (is_file($posterPath)) {
-                @unlink($posterPath);
-            }
+            $filmTools = new FilmTools();
+            $filmTools->deletePosterImage($film->poster_image);
         }
 
         $filmModel->delete($id);
@@ -178,18 +160,19 @@ class FilmManagementController extends BaseController
             return redirect()->back()->with('error', 'Please select both person and role.');
         }
 
-        $personRoleModel = new PersonRole();
-        
-        // Check if this person is already in this film with a different role
-        $existing = $personRoleModel->where('persons_id', $personId)
-                                     ->where('films_id', $filmId)
-                                     ->first();
+        $db = \Config\Database::connect();
+
+        $existing = $db->table('persons_has_films')
+            ->where('persons_id', $personId)
+            ->where('films_id', $filmId)
+            ->get()
+            ->getRow();
 
         if ($existing) {
             return redirect()->back()->with('error', 'This person is already assigned to this film.');
         }
 
-        $personRoleModel->insert([
+        $db->table('persons_has_films')->insert([
             'persons_id' => $personId,
             'films_id' => $filmId,
             'roles_id' => $roleId,
@@ -200,10 +183,11 @@ class FilmManagementController extends BaseController
 
     public function removePerson($filmId, $personId)
     {
-        $personRoleModel = new PersonRole();
-        $personRoleModel->where('persons_id', $personId)
-                        ->where('films_id', $filmId)
-                        ->delete();
+        $db = \Config\Database::connect();
+        $db->table('persons_has_films')
+            ->where('persons_id', $personId)
+            ->where('films_id', $filmId)
+            ->delete();
 
         return redirect()->back()->with('success', 'Person removed from film successfully.');
     }

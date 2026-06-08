@@ -4,6 +4,14 @@
 <?= $this->section("content"); ?>
 
     <div class="container pb-5">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="<?= site_url('/') ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= site_url('/') ?>">Films</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= esc($film->title) ?></li>
+            </ol>
+        </nav>
+
         <div class="row g-4 align-items-stretch">
             <div class="col-lg-4">
                 <div class="poster-card h-100">
@@ -15,6 +23,7 @@
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         <span class="info-chip"><?= esc($film->year) ?></span>
                         <span class="info-chip"><?= esc($film->length) ?> minutes</span>
+                        <span class="info-chip"><?= esc($filmCastCount) ?> cast members</span>
                     </div>
                     <h1 class="display-5 fw-bold section-title mb-3"><?= esc($film->title) ?></h1>
                     
