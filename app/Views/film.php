@@ -6,8 +6,8 @@
     <div class="container pb-5">
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="<?= site_url('/') ?>">Home</a></li>
-                <li class="breadcrumb-item"><a href="<?= site_url('/') ?>">Films</a></li>
+                <li class="breadcrumb-item"><a href="<?= site_url('') ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= site_url('') ?>">Films</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?= esc($film->title) ?></li>
             </ol>
         </nav>

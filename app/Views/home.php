@@ -10,7 +10,7 @@
                 <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
                     <div class="card movie-card h-100">
                         <a href="<?= site_url('film/') . esc($film->id) ?>" class="text-decoration-none text-reset">
-                            <img src='<?= "csfd_pictures/" . esc($film->poster_image) ?>' class="movie-poster" alt="<?= esc($film->title) ?>">
+                            <img src='<?= base_url() . "csfd_pictures/" . esc($film->poster_image) ?>' class="movie-poster" alt="<?= esc($film->title) ?>">
                         </a>
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
