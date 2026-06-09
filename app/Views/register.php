@@ -18,8 +18,6 @@
                     <?= bs_form_group('email', 'Email', 'email', set_value('email'), 'Enter email', 'envelope') ?>
                     <?= bs_form_group('first_name', 'First name', 'text', set_value('first_name'), 'Enter first name', 'id-card') ?>
                     <?= bs_form_group('last_name', 'Last name', 'text', set_value('last_name'), 'Enter last name', 'id-card') ?>
-                    <?= bs_form_group('company', 'Company', 'text', set_value('company'), 'Optional company', 'building', false) ?>
-                    <?= bs_form_group('phone', 'Phone', 'text', set_value('phone'), 'Optional phone', 'phone', false) ?>
                     <?= bs_password_group('password', 'Password', 'Create password') ?>
                     <?= bs_password_group('password_confirm', 'Confirm password', 'Repeat password') ?>
 

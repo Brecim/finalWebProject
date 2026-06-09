@@ -23,7 +23,7 @@ class LoginController extends BaseController
     public function login()
     {
         if ($this->ionAuth->loggedIn()) {
-        return redirect()->to('/admin/films');
+        return redirect()->to('/');
     }
 
         return view ("login");
@@ -78,8 +78,6 @@ class LoginController extends BaseController
             [
                 'first_name' => $this->request->getPost('first_name'),
                 'last_name' => $this->request->getPost('last_name'),
-                'company' => $this->request->getPost('company'),
-                'phone' => $this->request->getPost('phone'),
             ]
         );
 
