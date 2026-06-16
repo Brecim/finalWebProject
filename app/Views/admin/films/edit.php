@@ -43,7 +43,8 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-semibold">Poster image</label>
-                    <input type="file" name="poster_image" class="form-control">
+                    <input type="file" name="poster_image" id="poster_image"
+       accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
                     <?php if (! empty($film->poster_image)): ?>
                         <div class="mt-3">
                             <small class="text-muted d-block mb-2">Current image</small>
